@@ -65,7 +65,7 @@
         }
 
         function playAudio() {
-            document.querySelector('#header').innerHTML("▶");
+            //document.querySelector('#header').innerHTML("▶");
             audio.src = playlist[index].src;
             audio.play()
                 .then(_ => updateMetadata())
