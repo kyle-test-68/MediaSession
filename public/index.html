@@ -9,19 +9,44 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title></title>
+    <title>Media Session</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="css/materialize.min.css">
 </head>
 
 <body>
 
-    <button id="playButton">▶ PLAY</button>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper black">
+                <a href="#!" class="brand-logo">Media Session</a>
+                <a href="#" data-target="mobile-demo" class="sidenav-trigger" style="padding-top: 7px;"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z" /></svg></a>
+        </nav>
+    </div>
+
+    <div class="container" style="margin-top: 60px;">
+        <button id="playButton" class="btn black">▶ PLAY</button>
+        <button id="pauseButton" class="btn black"><b>||</b> PAUSE </button>
+    </div>
+
+    <div id="box" class="container" style="margin-top: 60px;">
+        
+    </div>
+
+
     <script>
 
 
-        document.querySelector('#playButton').addEventListener('click', onPlayButtonClick);
+        playButton = document.querySelector('#playButton');
+        pauseButton = document.querySelector('#pauseButton');
+        //text = document.querySelector('#header');
+
+        
+        playButton.addEventListener('click', onPlayButtonClick);
+        pauseButton.addEventListener('click', pauseAudio);
 
         if (!('mediaSession' in navigator)) {
             console.log('The Media Session API is not yet available. Try Chrome for Android.');
@@ -43,10 +68,15 @@
         }
 
         function playAudio() {
+            document.querySelector('#header').innerHTML("▶");
             audio.src = playlist[index].src;
             audio.play()
                 .then(_ => updateMetadata())
                 .catch(error => console.log(error));
+        }
+
+        function pauseAudio() {
+            audio.pause();
         }
 
         function updateMetadata() {
@@ -161,37 +191,30 @@
         /* Utils */
 
         function getAwesomePlaylist() {
-            const BASE_URL = 'https://storage.googleapis.com/media-session/';
+            //const BASE_URL = 'https://storage.googleapis.com/media-session/';
 
             return [{
                 src: '/music/symphony.mp3',
                 title: 'Symphony No. 5',
                 artist: 'Beethoven',
-                album: 'N/A',
                 artwork: [
-                    { src: BASE_URL + 'sintel/artwork-96.png', sizes: '96x96', type: 'image/png' },
-                    { src: BASE_URL + 'sintel/artwork-128.png', sizes: '128x128', type: 'image/png' },
-                    { src: BASE_URL + 'sintel/artwork-192.png', sizes: '192x192', type: 'image/png' },
-                    { src: BASE_URL + 'sintel/artwork-256.png', sizes: '256x256', type: 'image/png' },
-                    { src: BASE_URL + 'sintel/artwork-384.png', sizes: '384x384', type: 'image/png' },
-                    { src: BASE_URL + 'sintel/artwork-512.png', sizes: '512x512', type: 'image/png' },
+                    { src: '/music/beethoven-384.png', sizes: '384x384', type: 'image/png' },
+                    { src: '/music/beethoven-512.png', sizes: '512x512', type: 'image/png' }
                 ]
             }, {
                 src: '/music/valkyrie.mp3',
                 title: 'Ride of the Valkyrie',
                 artist: 'Wagner',
-                album: 'N/A',
                 artwork: [
-                    { src: BASE_URL + 'big-buck-bunny/artwork-96.png', sizes: '96x96', type: 'image/png' },
-                    { src: BASE_URL + 'big-buck-bunny/artwork-128.png', sizes: '128x128', type: 'image/png' },
-                    { src: BASE_URL + 'big-buck-bunny/artwork-192.png', sizes: '192x192', type: 'image/png' },
-                    { src: BASE_URL + 'big-buck-bunny/artwork-256.png', sizes: '256x256', type: 'image/png' },
-                    { src: BASE_URL + 'big-buck-bunny/artwork-384.png', sizes: '384x384', type: 'image/png' },
-                    { src: BASE_URL + 'big-buck-bunny/artwork-512.png', sizes: '512x512', type: 'image/png' },
+                    { src: '/music/wagner-384.png', sizes: '384x384', type: 'image/png' },
+                    { src: '/music/wagner-512.png', sizes: '512x512', type: 'image/png' }
                 ]
             }];
         }
     </script>
+
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/materialize.min.js"></script>
 
 </body>
 
