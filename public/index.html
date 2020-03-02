@@ -27,7 +27,7 @@
     <div class="container" style="margin-top: 60px;">
         <button id="playButton" class="btn black">▶ PLAY</button>
         <button id="pauseButton" class="btn black"><b>||</b> PAUSE </button>
-        <button id="nextButton" class="btn black">▶| test</button>
+        <button id="nextButton" class="btn black">▶| NEXT</button>
     </div>
 
     <div id="box" class="container" style="margin-top: 60px;">
@@ -86,7 +86,7 @@
             document.getElementById("artist").innerHTML = playlist[index].artist;
             document.getElementById("thumbnail").src = playlist[index].artwork[0].src;
             console.log(getTime(audio.duration));
-            document.getElementById("time").innerHTML = audio.duration / 60;
+            //document.getElementById("time").innerHTML = audio.duration / 60;
 
         }
 
