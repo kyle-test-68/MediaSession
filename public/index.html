@@ -27,15 +27,15 @@
     <div class="container" style="margin-top: 60px;">
         <button id="playButton" class="btn black">▶ PLAY</button>
         <button id="pauseButton" class="btn black"><b>||</b> PAUSE </button>
+        <button id="nextButton" class="btn black">▶| test</button>
     </div>
 
     <div id="box" class="container" style="margin-top: 60px;">
         <img id="thumbnail" src="" width="100px" height="100px" style="float: left; margin-right: 30px;">
         <div>
             <h5 id="title">Title</h4>
-            <h6 id="artist">Artist</h4>
-            <h6 id="time">--:--</h4>
-                
+                <h6 id="artist">Artist</h4>
+                    <h6 id="time">--:--</h4>
 
         </div>
     </div>
@@ -43,10 +43,13 @@
     <script>
         playButton = document.querySelector('#playButton');
         pauseButton = document.querySelector('#pauseButton');
+        nextButton = document.querySelector('#nextButton');
+        time = document.querySelector('#time');
         //text = document.querySelector('#header');
-        
+
         playButton.addEventListener('click', onPlayButtonClick);
         pauseButton.addEventListener('click', pauseAudio);
+        nextButton.addEventListener('click', nextTrack);
 
         if (!('mediaSession' in navigator)) {
             console.log('The Media Session API is not yet available. Try Chrome for Android.');
@@ -65,13 +68,25 @@
 
         function onPlayButtonClick() {
             playAudio();
-            changeDetails();
         }
 
-        function changeDetails(){
+        function getTime(time) {
+            var minutes = Math.floor(time / 60);
+            var seconds = time - minutes * 60;
+            return str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2);
+        }
+
+        function str_pad_left(string, pad, length) {
+            return (new Array(length + 1).join(pad) + string).slice(-length);
+        }
+
+
+        function changeDetails() {
             document.getElementById("title").innerHTML = playlist[index].title;
             document.getElementById("artist").innerHTML = playlist[index].artist;
             document.getElementById("thumbnail").src = playlist[index].artwork[0].src;
+            console.log(getTime(audio.duration));
+            document.getElementById("time").innerHTML = audio.duration / 60;
 
         }
 
@@ -80,7 +95,9 @@
             audio.src = playlist[index].src;
             audio.play()
                 .then(_ => updateMetadata())
+                .then(_ => changeDetails())
                 .catch(error => console.log(error));
+            //changeDetails();
         }
 
         function pauseAudio() {
@@ -124,17 +141,20 @@
         });
 
         navigator.mediaSession.setActionHandler('nexttrack', function () {
+            nextTrack();
+
+        });
+
+        function nextTrack() {
             console.log('> User clicked "Next Track" icon.');
             index = (index + 1) % playlist.length;
             playAudio();
-            
-        });
+        }
 
         audio.addEventListener('ended', function () {
             // Play automatically the next track when audio ends.
             index = (index - 1 + playlist.length) % playlist.length;
             playAudio();
-            changeDetails();
         });
 
         /* Seek Backward & Seek Forward */
@@ -220,6 +240,19 @@
                     { src: '/music/wagner-512.png', sizes: '512x512', type: 'image/png' }
                 ]
             }];
+        }
+
+        if ('serviceWorker' in navigator && 'SyncManager' in window && 'BackgroundFetchManager' in self) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('sw.js').then(function (reg) {
+                    return reg.sync.getTags();
+                }).then(function (tags) {
+                    if (tags.includes('syncTest')) log("There's already a background sync pending");
+                }).catch(function (err) {
+                    console.log('It broke (probably sync not supported or flag not enabled)');
+                    console.log(err.message);
+                });
+            });
         }
     </script>
 
